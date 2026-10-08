@@ -12,6 +12,12 @@ from .http import HTTPError, PreconditionFailed, Resource, \
         Unauthorized, Forbidden
 
 try:
-    __version__ = __import__('pkg_resources').get_distribution('CouchDB').version
-except:
+    from importlib.metadata import version as _dist_version
+except ImportError:  # Python < 3.8
+    def _dist_version(name):
+        return __import__('pkg_resources').get_distribution(name).version
+
+try:
+    __version__ = _dist_version('CouchDB')
+except Exception:
     __version__ = '?'
